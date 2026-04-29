@@ -10,17 +10,17 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #0e0f11;
-    --surface: #16181c;
-    --surface2: #1e2127;
-    --border: rgba(255,255,255,0.08);
-    --border2: rgba(255,255,255,0.14);
-    --text: #e8e9eb;
-    --muted: #7a7d85;
-    --teal: #1D9E75;
-    --blue: #378ADD;
-    --amber: #EF9F27;
-    --red: #E24B4A;
+    --bg: #F7F4EF;
+    --surface: #FFFDF9;
+    --surface2: #F0EDE6;
+    --border: rgba(0,0,0,0.07);
+    --border2: rgba(0,0,0,0.13);
+    --text: #1a1916;
+    --muted: #8a8680;
+    --teal: #0f7a5a;
+    --blue: #2a6db5;
+    --amber: #b87010;
+    --red: #c0392b;
     --radius: 10px;
     --radius-sm: 6px;
   }
@@ -36,20 +36,18 @@
 
   .container { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.5rem; }
 
-  /* Header */
   .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
     padding-bottom: 1.5rem;
-    border-bottom: 0.5px solid var(--border);
+    border-bottom: 0.5px solid var(--border2);
   }
 
   .header h1 { font-size: 20px; font-weight: 500; letter-spacing: -0.3px; }
   .header-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
 
-  /* Buttons */
   .btn {
     background: transparent;
     border: 0.5px solid var(--border2);
@@ -63,16 +61,14 @@
   }
   .btn:hover { background: var(--surface2); }
   .btn:active { transform: scale(0.97); }
-  .btn-icon { padding: 7px 10px; }
   .btn-primary {
-    background: var(--teal);
-    border-color: var(--teal);
-    color: #fff;
+    background: #1a1916;
+    border-color: #1a1916;
+    color: #F7F4EF;
     font-weight: 500;
   }
-  .btn-primary:hover { opacity: 0.9; background: var(--teal); }
+  .btn-primary:hover { opacity: 0.85; background: #1a1916; }
 
-  /* Metrics */
   .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem; }
   .metric {
     background: var(--surface);
@@ -83,7 +79,6 @@
   .metric-label { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
   .metric-value { font-size: 26px; font-weight: 500; font-family: 'DM Mono', monospace; }
 
-  /* Show grid */
   .shows { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
 
   .show-card {
@@ -94,7 +89,7 @@
     transition: border-color 0.15s;
   }
   .show-card:hover { border-color: var(--border2); }
-  .show-card.saving { opacity: 0.5; pointer-events: none; }
+  .show-card.saving { opacity: 0.45; pointer-events: none; }
 
   .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
   .card-title { font-weight: 500; font-size: 14px; line-height: 1.4; flex: 1; }
@@ -109,7 +104,7 @@
     white-space: nowrap;
     transition: background 0.15s;
   }
-  .watch-link:hover { background: rgba(55,138,221,0.12); }
+  .watch-link:hover { background: rgba(42,109,181,0.07); }
 
   .prog-bar { height: 4px; background: var(--surface2); border-radius: 2px; margin: 8px 0; overflow: hidden; }
   .prog-fill { height: 100%; border-radius: 2px; transition: width 0.35s ease; }
@@ -133,24 +128,12 @@
   .ctr-btn:hover { background: var(--surface2); }
   .ctr-btn:active { transform: scale(0.95); }
 
-  .badge {
-    font-size: 11px;
-    border-radius: 4px;
-    padding: 2px 7px;
-    font-weight: 500;
-  }
-  .badge-done { background: rgba(29,158,117,0.15); color: var(--teal); }
+  .badge { font-size: 11px; border-radius: 4px; padding: 2px 7px; font-weight: 500; }
+  .badge-done { background: rgba(15,122,90,0.1); color: var(--teal); }
 
-  /* Status / empty */
-  .status {
-    text-align: center;
-    padding: 3rem 1rem;
-    color: var(--muted);
-    font-size: 14px;
-  }
+  .status { text-align: center; padding: 3rem 1rem; color: var(--muted); font-size: 14px; }
   .status-error { color: var(--red); }
 
-  /* Settings screen */
   #settings-screen {
     min-height: 100vh;
     display: flex;
@@ -161,7 +144,7 @@
 
   .settings-card {
     background: var(--surface);
-    border: 0.5px solid var(--border);
+    border: 0.5px solid var(--border2);
     border-radius: var(--radius);
     padding: 2rem;
     max-width: 460px;
@@ -186,58 +169,54 @@
     outline: none;
     transition: border-color 0.15s;
   }
-  .field input:focus { border-color: var(--blue); }
+  .field input:focus { border-color: #1a1916; }
 
   .err { font-size: 13px; color: var(--red); margin-top: 10px; display: none; }
 
-  /* Spinner */
   @keyframes spin { to { transform: rotate(360deg); } }
   .spinner {
-    width: 18px; height: 18px;
-    border: 2px solid var(--border2);
+    width: 14px; height: 14px;
+    border: 1.5px solid var(--border2);
     border-top-color: var(--teal);
     border-radius: 50%;
     animation: spin 0.7s linear infinite;
     display: inline-block;
     vertical-align: middle;
-    margin-right: 8px;
+    margin-right: 6px;
   }
 </style>
 </head>
 <body>
 
-<!-- SETTINGS SCREEN -->
 <div id="settings-screen" style="display:none;">
   <div class="settings-card">
     <h2>Episode Tracker</h2>
     <p>
       Connect your Notion database to get started. You need a
-      <a href="https://www.notion.so/my-integrations" target="_blank">Notion Integration Token</a>
-      — create an internal integration, copy the secret, then share your database with it.
+      <a href="https://www.notion.so/profile/integrations" target="_blank">Notion Integration Token</a>
+      — create an internal connection, copy the secret, then share your database with it.
     </p>
     <div class="field">
       <label>Notion Integration Token</label>
       <input type="password" id="token-input" placeholder="ntn_..." autocomplete="off" />
     </div>
     <button class="btn btn-primary" onclick="saveToken()" style="width:100%;margin-top:4px;">Connect</button>
-    <div class="err" id="settings-err">Could not connect — check your token and database sharing settings.</div>
+    <div class="err" id="settings-err"></div>
   </div>
 </div>
 
-<!-- MAIN APP -->
 <div id="app-screen" style="display:none;">
   <div class="container">
     <div class="header">
       <div>
-        <div class="header h1" style="font-size:20px;font-weight:500;">Episode tracker</div>
+        <h1>Episode tracker</h1>
         <div class="header-sub">Synced with Notion</div>
       </div>
       <div style="display:flex;gap:8px;">
         <button class="btn" onclick="loadShows()">Refresh</button>
-        <button class="btn btn-icon" title="Settings" onclick="showSettings()">⚙</button>
+        <button class="btn" title="Settings" onclick="showSettings()">⚙</button>
       </div>
     </div>
-
     <div id="metrics" class="metrics"></div>
     <div id="shows" class="shows"></div>
     <div id="status" class="status"></div>
@@ -293,10 +272,10 @@ async function loadShows() {
 function pct(s) { return s.total > 0 ? Math.round((s.watched / s.total) * 100) : 0; }
 
 function fillColor(p) {
-  if (p >= 100) return '#1D9E75';
-  if (p >= 50)  return '#378ADD';
-  if (p > 0)    return '#EF9F27';
-  return 'rgba(255,255,255,0.1)';
+  if (p >= 100) return '#0f7a5a';
+  if (p >= 50)  return '#2a6db5';
+  if (p > 0)    return '#b87010';
+  return 'rgba(0,0,0,0.1)';
 }
 
 function renderMetrics() {
@@ -310,18 +289,18 @@ function renderMetrics() {
     </div>
     <div class="metric">
       <div class="metric-label">completed</div>
-      <div class="metric-value" style="color:#1D9E75">${done}</div>
+      <div class="metric-value" style="color:#0f7a5a">${done}</div>
     </div>
     <div class="metric">
       <div class="metric-label">in progress</div>
-      <div class="metric-value" style="color:#378ADD">${going}</div>
+      <div class="metric-value" style="color:#2a6db5">${going}</div>
     </div>
   `;
 }
 
 function renderShows() {
   const sorted = [...shows].sort((a,b) => pct(b) - pct(a));
-  document.getElementById('shows').innerHTML = sorted.map((s, i) => {
+  document.getElementById('shows').innerHTML = sorted.map(s => {
     const p = pct(s);
     const done = s.total > 0 && s.watched >= s.total;
     const link = s.ororo ? `<a href="${s.ororo}" class="watch-link" target="_blank">Watch</a>` : '';
@@ -414,7 +393,6 @@ function showSettings() {
   document.getElementById('settings-err').style.display = 'none';
 }
 
-// Init
 token = localStorage.getItem('notion_token') || '';
 if (token) {
   document.getElementById('app-screen').style.display = 'block';
