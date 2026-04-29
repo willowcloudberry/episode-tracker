@@ -230,7 +230,7 @@ let shows = [];
 let token = '';
 
 function notionFetch(path, method, body) {
-  const url = PROXY + encodeURIComponent('https://api.notion.com' + path) + '&_=' + Date.now();
+  const url = PROXY + encodeURIComponent('https://api.notion.com' + path);
   return fetch(url, {
     cache: 'no-store',
     method: method || 'GET',
