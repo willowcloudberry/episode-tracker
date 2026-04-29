@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Episode Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0e0f11;
+    --surface: #16181c;
+    --surface2: #1e2127;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #e8e9eb;
+    --muted: #7a7d85;
+    --teal: #1D9E75;
+    --blue: #378ADD;
+    --amber: #EF9F27;
+    --red: #E24B4A;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  .container { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+
+  /* Header */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .header h1 { font-size: 20px; font-weight: 500; letter-spacing: -0.3px; }
+  .header-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+  /* Buttons */
+  .btn {
+    background: transparent;
+    border: 0.5px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 7px 14px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn:hover { background: var(--surface2); }
+  .btn:active { transform: scale(0.97); }
+  .btn-icon { padding: 7px 10px; }
+  .btn-primary {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: #fff;
+    font-weight: 500;
+  }
+  .btn-primary:hover { opacity: 0.9; background: var(--teal); }
+
+  /* Metrics */
+  .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem; }
+  .metric {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+  }
+  .metric-label { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .metric-value { font-size: 26px; font-weight: 500; font-family: 'DM Mono', monospace; }
+
+  /* Show grid */
+  .shows { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+
+  .show-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.1rem;
+    transition: border-color 0.15s;
+  }
+  .show-card:hover { border-color: var(--border2); }
+  .show-card.saving { opacity: 0.5; pointer-events: none; }
+
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+  .card-title { font-weight: 500; font-size: 14px; line-height: 1.4; flex: 1; }
+
+  .watch-link {
+    font-size: 12px;
+    color: var(--blue);
+    text-decoration: none;
+    border: 0.5px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 3px 9px;
+    white-space: nowrap;
+    transition: background 0.15s;
+  }
+  .watch-link:hover { background: rgba(55,138,221,0.12); }
+
+  .prog-bar { height: 4px; background: var(--surface2); border-radius: 2px; margin: 8px 0; overflow: hidden; }
+  .prog-fill { height: 100%; border-radius: 2px; transition: width 0.35s ease; }
+
+  .card-bottom { display: flex; justify-content: space-between; align-items: center; }
+  .ep-count { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+  .counter { display: flex; gap: 5px; }
+  .ctr-btn {
+    background: transparent;
+    border: 0.5px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 3px 11px;
+    color: var(--text);
+    font-size: 15px;
+    cursor: pointer;
+    font-family: inherit;
+    line-height: 1;
+    transition: background 0.12s;
+  }
+  .ctr-btn:hover { background: var(--surface2); }
+  .ctr-btn:active { transform: scale(0.95); }
+
+  .badge {
+    font-size: 11px;
+    border-radius: 4px;
+    padding: 2px 7px;
+    font-weight: 500;
+  }
+  .badge-done { background: rgba(29,158,117,0.15); color: var(--teal); }
+
+  /* Status / empty */
+  .status {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .status-error { color: var(--red); }
+
+  /* Settings screen */
+  #settings-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .settings-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    max-width: 460px;
+    width: 100%;
+  }
+
+  .settings-card h2 { font-size: 18px; font-weight: 500; margin-bottom: 6px; }
+  .settings-card p { font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; line-height: 1.6; }
+  .settings-card a { color: var(--blue); }
+
+  .field { margin-bottom: 1rem; }
+  .field label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+  .field input {
+    width: 100%;
+    background: var(--surface2);
+    border: 0.5px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 9px 12px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .field input:focus { border-color: var(--blue); }
+
+  .err { font-size: 13px; color: var(--red); margin-top: 10px; display: none; }
+
+  /* Spinner */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid var(--border2);
+    border-top-color: var(--teal);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+</style>
+</head>
+<body>
+
+<!-- SETTINGS SCREEN -->
+<div id="settings-screen" style="display:none;">
+  <div class="settings-card">
+    <h2>Episode Tracker</h2>
+    <p>
+      Connect your Notion database to get started. You need a
+      <a href="https://www.notion.so/my-integrations" target="_blank">Notion Integration Token</a>
+      — create an internal integration, copy the secret, then share your database with it.
+    </p>
+    <div class="field">
+      <label>Notion Integration Token</label>
+      <input type="password" id="token-input" placeholder="ntn_..." autocomplete="off" />
+    </div>
+    <button class="btn btn-primary" onclick="saveToken()" style="width:100%;margin-top:4px;">Connect</button>
+    <div class="err" id="settings-err">Could not connect — check your token and database sharing settings.</div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app-screen" style="display:none;">
+  <div class="container">
+    <div class="header">
+      <div>
+        <div class="header h1" style="font-size:20px;font-weight:500;">Episode tracker</div>
+        <div class="header-sub">Synced with Notion</div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn" onclick="loadShows()">Refresh</button>
+        <button class="btn btn-icon" title="Settings" onclick="showSettings()">⚙</button>
+      </div>
+    </div>
+
+    <div id="metrics" class="metrics"></div>
+    <div id="shows" class="shows"></div>
+    <div id="status" class="status"></div>
+  </div>
+</div>
+
+<script>
+const DB_ID = '34e0c9a6dfb580cfa0bdf62ec67dd7d6';
+const PROXY = 'https://corsproxy.io/?url=';
+let shows = [];
+let token = '';
+
+function notionFetch(path, method, body) {
+  const url = PROXY + encodeURIComponent('https://api.notion.com' + path);
+  return fetch(url, {
+    method: method || 'GET',
+    headers: {
+      'Authorization': 'Bearer ' + token,
+      'Content-Type': 'application/json',
+      'Notion-Version': '2022-06-28'
+    },
+    body: body ? JSON.stringify(body) : undefined
+  }).then(r => r.json());
+}
+
+function parsePage(page) {
+  const p = page.properties;
+  return {
+    id: page.id,
+    title: p.Title?.title?.[0]?.plain_text || 'Untitled',
+    watched: p.Watched?.number ?? 0,
+    total: p.Total?.number ?? 0,
+    ororo: p.Ororo?.url || null
+  };
+}
+
+async function loadShows() {
+  setStatus('<span class="spinner"></span>Fetching from Notion…', false);
+  document.getElementById('shows').innerHTML = '';
+  document.getElementById('metrics').innerHTML = '';
+  try {
+    const data = await notionFetch('/v1/databases/' + DB_ID + '/query', 'POST', { page_size: 100 });
+    if (data.object === 'error') throw new Error(data.message);
+    shows = (data.results || []).map(parsePage);
+    renderMetrics();
+    renderShows();
+    setStatus('', false);
+  } catch(e) {
+    setStatus('Failed to load: ' + e.message, true);
+  }
+}
+
+function pct(s) { return s.total > 0 ? Math.round((s.watched / s.total) * 100) : 0; }
+
+function fillColor(p) {
+  if (p >= 100) return '#1D9E75';
+  if (p >= 50)  return '#378ADD';
+  if (p > 0)    return '#EF9F27';
+  return 'rgba(255,255,255,0.1)';
+}
+
+function renderMetrics() {
+  const total = shows.length;
+  const done = shows.filter(s => s.total > 0 && s.watched >= s.total).length;
+  const going = shows.filter(s => s.watched > 0 && s.watched < s.total).length;
+  document.getElementById('metrics').innerHTML = `
+    <div class="metric">
+      <div class="metric-label">shows</div>
+      <div class="metric-value">${total}</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">completed</div>
+      <div class="metric-value" style="color:#1D9E75">${done}</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">in progress</div>
+      <div class="metric-value" style="color:#378ADD">${going}</div>
+    </div>
+  `;
+}
+
+function renderShows() {
+  const sorted = [...shows].sort((a,b) => pct(b) - pct(a));
+  document.getElementById('shows').innerHTML = sorted.map((s, i) => {
+    const p = pct(s);
+    const done = s.total > 0 && s.watched >= s.total;
+    const link = s.ororo ? `<a href="${s.ororo}" class="watch-link" target="_blank">Watch</a>` : '';
+    const badge = done ? `<span class="badge badge-done">done</span>` : '';
+    const origIdx = shows.indexOf(s);
+    return `
+      <div class="show-card" id="card-${origIdx}">
+        <div class="card-top">
+          <div class="card-title">${esc(s.title)}</div>
+          ${link}
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;">${p}%</span>
+          ${badge}
+        </div>
+        <div class="prog-bar">
+          <div class="prog-fill" style="width:${p}%;background:${fillColor(p)};"></div>
+        </div>
+        <div class="card-bottom">
+          <span class="ep-count">${s.watched} / ${s.total} eps</span>
+          <div class="counter">
+            <button class="ctr-btn" onclick="adjust(${origIdx},-1)">−</button>
+            <button class="ctr-btn" onclick="adjust(${origIdx},1)">+</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function adjust(i, d) {
+  const s = shows[i];
+  const nv = Math.max(0, Math.min(s.total || 9999, s.watched + d));
+  if (nv === s.watched) return;
+  const prev = s.watched;
+  shows[i].watched = nv;
+  renderShows();
+  renderMetrics();
+  const card = document.getElementById('card-' + i);
+  if (card) card.classList.add('saving');
+  try {
+    const res = await notionFetch('/v1/pages/' + s.id, 'PATCH', {
+      properties: { Watched: { number: nv } }
+    });
+    if (res.object === 'error') throw new Error(res.message);
+  } catch(e) {
+    shows[i].watched = prev;
+    renderShows();
+    renderMetrics();
+  } finally {
+    const c = document.getElementById('card-' + i);
+    if (c) c.classList.remove('saving');
+  }
+}
+
+function setStatus(html, isError) {
+  const el = document.getElementById('status');
+  el.innerHTML = html;
+  el.className = 'status' + (isError ? ' status-error' : '');
+}
+
+function esc(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function saveToken() {
+  const input = document.getElementById('token-input').value.trim();
+  const errEl = document.getElementById('settings-err');
+  errEl.style.display = 'none';
+  if (!input) return;
+  token = input;
+  try {
+    const test = await notionFetch('/v1/databases/' + DB_ID + '/query', 'POST', { page_size: 1 });
+    if (test.object === 'error') throw new Error(test.message);
+    localStorage.setItem('notion_token', token);
+    document.getElementById('settings-screen').style.display = 'none';
+    document.getElementById('app-screen').style.display = 'block';
+    loadShows();
+  } catch(e) {
+    token = '';
+    errEl.textContent = 'Could not connect — ' + e.message;
+    errEl.style.display = 'block';
+  }
+}
+
+function showSettings() {
+  document.getElementById('app-screen').style.display = 'none';
+  document.getElementById('settings-screen').style.display = 'flex';
+  document.getElementById('token-input').value = localStorage.getItem('notion_token') || '';
+  document.getElementById('settings-err').style.display = 'none';
+}
+
+// Init
+token = localStorage.getItem('notion_token') || '';
+if (token) {
+  document.getElementById('app-screen').style.display = 'block';
+  loadShows();
+} else {
+  document.getElementById('settings-screen').style.display = 'flex';
+}
+</script>
+</body>
+</html>
